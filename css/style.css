@@ -1,0 +1,1157 @@
+/* =====================================================
+   MODERN RESPONSIVE STUB
+   Parameterized colours, shapes, 2D/3D effects and speed
+===================================================== */
+
+:root {
+    /* -------------------------
+       BRAND COLOURS
+    ------------------------- */
+    --color-primary: #6366f1;
+    --color-primary-dark: #4f46e5;
+    --color-secondary: #8b5cf6;
+    --color-accent: #ec4899;
+
+    /* -------------------------
+       PAGE
+    ------------------------- */
+    --color-background: #f8f9ff;
+    --color-text: #202024;
+    --color-text-dark: #17171b;
+    --color-text-muted: #666872;
+    --color-white: #ffffff;
+
+    /* -------------------------
+       GLASS
+    ------------------------- */
+    --glass-background: rgba(255, 255, 255, 0.55);
+    --glass-background-light: rgba(255, 255, 255, 0.45);
+    --glass-background-strong: rgba(255, 255, 255, 0.78);
+    --glass-border: rgba(255, 255, 255, 0.65);
+
+    /* -------------------------
+       ABSTRACT COLOURS
+    ------------------------- */
+    --blob-purple: #7c3aed;
+    --blob-blue: #3b82f6;
+    --blob-pink: #ec4899;
+    --blob-cyan: #06b6d4;
+
+    /* -------------------------
+       ABSTRACT SHAPES
+    ------------------------- */
+    --shape-size-small: 80px;
+    --shape-size-medium: 260px;
+    --shape-size-large: 450px;
+
+    --shape-radius: 50%;
+
+    /* 0 = invisible, 1 = solid */
+    --shape-opacity: 0.40;
+    --orb-opacity: 0.75;
+    --ring-opacity: 0.18;
+
+    /* -------------------------
+       BLUR
+    ------------------------- */
+    --shape-blur: 75px;
+    --orb-blur: 5px;
+
+    /* -------------------------
+       ANIMATION SPEEDS
+       Larger number = slower
+    ------------------------- */
+    --speed-very-slow: 50s;
+    --speed-slow: 35s;
+    --speed-medium: 18s;
+    --speed-fast: 10s;
+    --speed-very-fast: 5s;
+
+    --blob-1-speed: 35s;
+    --blob-2-speed: 42s;
+    --blob-3-speed: 50s;
+
+    --sphere-1-speed: 45s;
+    --sphere-2-speed: 55s;
+
+    --orb-1-speed: 18s;
+    --orb-2-speed: 22s;
+    --orb-3-speed: 26s;
+
+    --ring-1-speed: 60s;
+    --ring-2-speed: 45s;
+
+    /* -------------------------
+       MOVEMENT
+    ------------------------- */
+    --blob-movement-x: 120px;
+    --blob-movement-y: 100px;
+
+    --orb-movement-x: 80px;
+    --orb-movement-y: 60px;
+
+    /* -------------------------
+       SCALE
+    ------------------------- */
+    --shape-scale-min: 0.95;
+    --shape-scale-max: 1.15;
+
+    /* -------------------------
+       3D
+    ------------------------- */
+    --perspective: 1000px;
+    --rotate-x: 25deg;
+    --rotate-y: 35deg;
+    --rotate-z: 360deg;
+
+    /* -------------------------
+       GLOW
+    ------------------------- */
+    --glow-primary: rgba(99, 102, 241, 0.35);
+    --glow-secondary: rgba(139, 92, 246, 0.20);
+    --glow-size: 70px;
+
+    /* -------------------------
+       BORDERS / SHADOWS
+    ------------------------- */
+    --border-primary: rgba(99, 102, 241, 0.30);
+    --shadow-light: rgba(0, 0, 0, 0.06);
+    --shadow-medium: rgba(0, 0, 0, 0.12);
+
+    /* -------------------------
+       RADIUS
+    ------------------------- */
+    --radius-small: 10px;
+    --radius-medium: 20px;
+    --radius-large: 30px;
+    --radius-pill: 50px;
+}
+
+
+/* =====================================================
+   RESET
+===================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    position: relative;
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.6;
+    color: var(--color-text);
+    background: var(--color-background);
+    overflow-x: hidden;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    font: inherit;
+}
+
+img,
+svg {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.container {
+    width: min(90%, 1200px);
+    margin-inline: auto;
+}
+
+.section {
+    position: relative;
+    padding: 100px 0;
+}
+
+
+/* =====================================================
+   ABSTRACT BACKGROUND
+===================================================== */
+
+.abstract-bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: -1;
+    perspective: var(--perspective);
+}
+
+.shape {
+    position: absolute;
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+
+/* =====================================================
+   2D SHAPE TYPES
+===================================================== */
+
+.shape-circle {
+    border-radius: 50%;
+}
+
+.shape-square {
+    border-radius: 0;
+}
+
+.shape-rounded {
+    border-radius: 30%;
+}
+
+.shape-ellipse {
+    border-radius: 50%;
+}
+
+
+/* =====================================================
+   2D GRADIENT SHAPES
+===================================================== */
+
+.shape-purple {
+    background: linear-gradient(
+        135deg,
+        var(--blob-purple),
+        var(--blob-blue)
+    );
+}
+
+.shape-pink {
+    background: linear-gradient(
+        135deg,
+        var(--blob-pink),
+        var(--color-secondary)
+    );
+}
+
+.shape-cyan {
+    background: linear-gradient(
+        135deg,
+        var(--blob-cyan),
+        var(--color-primary)
+    );
+}
+
+
+/* =====================================================
+   BLUR BLOBS
+===================================================== */
+
+.blob {
+    opacity: var(--shape-opacity);
+    filter: blur(var(--shape-blur));
+}
+
+.blob-1 {
+    width: var(--shape-size-large);
+    height: var(--shape-size-large);
+    top: -160px;
+    left: -120px;
+    animation: blobMove1 var(--blob-1-speed) ease-in-out infinite alternate;
+}
+
+.blob-2 {
+    width: var(--shape-size-large);
+    height: calc(var(--shape-size-large) * 0.78);
+    top: 25%;
+    right: -160px;
+    animation: blobMove2 var(--blob-2-speed) ease-in-out infinite alternate;
+}
+
+.blob-3 {
+    width: 500px;
+    height: 500px;
+    bottom: -280px;
+    left: 30%;
+    animation: blobMove3 var(--blob-3-speed) ease-in-out infinite alternate;
+}
+
+
+/* =====================================================
+   3D SHAPES
+===================================================== */
+
+.shape-3d {
+    opacity: var(--shape-opacity);
+    transform-style: preserve-3d;
+}
+
+.shape-sphere {
+    border-radius: 50%;
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            rgba(255, 255, 255, 0.95),
+            var(--color-primary) 34%,
+            var(--color-secondary) 68%,
+            rgba(0, 0, 0, 0.20)
+        );
+    box-shadow:
+        inset -40px -40px 80px rgba(0, 0, 0, 0.22),
+        inset 20px 20px 40px rgba(255, 255, 255, 0.35),
+        0 30px 80px rgba(0, 0, 0, 0.12);
+}
+
+.shape-glass-sphere {
+    border-radius: 50%;
+    background:
+        radial-gradient(
+            circle at 30% 25%,
+            rgba(255, 255, 255, 0.85),
+            rgba(99, 102, 241, 0.28),
+            rgba(255, 255, 255, 0.05)
+        );
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    box-shadow:
+        inset -20px -20px 50px rgba(99, 102, 241, 0.15),
+        0 30px 80px rgba(99, 102, 241, 0.20);
+    backdrop-filter: blur(10px);
+}
+
+.sphere-1 {
+    width: 180px;
+    height: 180px;
+    top: 16%;
+    right: 12%;
+    animation: sphereFloat1 var(--sphere-1-speed) ease-in-out infinite;
+}
+
+.sphere-2 {
+    width: 120px;
+    height: 120px;
+    bottom: 18%;
+    right: 27%;
+    animation: sphereFloat2 var(--sphere-2-speed) ease-in-out infinite;
+}
+
+
+/* =====================================================
+   ORBS
+===================================================== */
+
+.orb {
+    position: absolute;
+    border-radius: 50%;
+    opacity: var(--orb-opacity);
+    background:
+        radial-gradient(
+            circle at 30% 30%,
+            rgba(255, 255, 255, 0.95),
+            var(--glow-primary),
+            rgba(139, 92, 246, 0.08)
+        );
+    box-shadow:
+        0 0 30px var(--glow-primary),
+        0 0 var(--glow-size) var(--glow-secondary);
+    backdrop-filter: blur(var(--orb-blur));
+}
+
+.orb-1 {
+    width: var(--shape-size-small);
+    height: var(--shape-size-small);
+    top: 24%;
+    left: 12%;
+    animation: orbFloat1 var(--orb-1-speed) ease-in-out infinite;
+}
+
+.orb-2 {
+    width: calc(var(--shape-size-small) * 0.7);
+    height: calc(var(--shape-size-small) * 0.7);
+    top: 55%;
+    right: 15%;
+    animation: orbFloat2 var(--orb-2-speed) ease-in-out infinite;
+}
+
+.orb-3 {
+    width: calc(var(--shape-size-small) * 1.2);
+    height: calc(var(--shape-size-small) * 1.2);
+    bottom: 15%;
+    left: 20%;
+    animation: orbFloat3 var(--orb-3-speed) ease-in-out infinite;
+}
+
+
+/* =====================================================
+   RINGS
+===================================================== */
+
+.shape-ring {
+    position: absolute;
+    border-radius: 50%;
+    background: transparent;
+    border: 1px solid rgba(99, 102, 241, var(--ring-opacity));
+    transform-style: preserve-3d;
+}
+
+.ring-1 {
+    width: var(--shape-size-large);
+    height: var(--shape-size-large);
+    top: 5%;
+    right: -230px;
+    animation: rotateRing var(--ring-1-speed) linear infinite;
+}
+
+.ring-2 {
+    width: var(--shape-size-medium);
+    height: var(--shape-size-medium);
+    bottom: -150px;
+    left: -100px;
+    border-color: rgba(236, 72, 153, 0.16);
+    animation: rotateRing var(--ring-2-speed) linear infinite reverse;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.header {
+    position: fixed;
+    top: 20px;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 64px;
+    padding: 10px 20px;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-pill);
+    background: var(--glass-background);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 10px 40px var(--shadow-light);
+}
+
+
+/* =====================================================
+   LOGO
+===================================================== */
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.logo-mark {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    color: var(--color-white);
+    background: linear-gradient(
+        135deg,
+        var(--color-primary),
+        var(--color-accent)
+    );
+}
+
+.logo-text {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.nav a {
+    position: relative;
+    padding: 8px 4px;
+    color: var(--color-text);
+    font-size: 15px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    border-radius: 10px;
+    background: linear-gradient(
+        90deg,
+        var(--color-primary),
+        var(--color-accent)
+    );
+    transition: width 0.3s ease;
+}
+
+.nav a:hover {
+    color: var(--color-primary);
+}
+
+.nav a:hover::after {
+    width: 100%;
+}
+
+
+/* =====================================================
+   MOBILE MENU
+===================================================== */
+
+.menu-btn {
+    display: none;
+    width: 42px;
+    height: 42px;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 4px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--glass-background-light);
+    cursor: pointer;
+}
+
+.menu-btn span {
+    display: block;
+    width: 19px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--color-text);
+    transition:
+        transform 0.3s ease,
+        opacity 0.3s ease;
+}
+
+.menu-btn.active span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+}
+
+.menu-btn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-btn.active span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+}
+
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: 140px;
+}
+
+.hero-content {
+    width: 100%;
+    max-width: 760px;
+}
+
+.eyebrow {
+    margin-bottom: 15px;
+    color: var(--color-primary);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+.hero h1 {
+    color: var(--color-text-dark);
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+    font-weight: 800;
+}
+
+.hero h1 span {
+    display: block;
+    background: linear-gradient(
+        90deg,
+        var(--color-primary),
+        var(--color-secondary),
+        var(--color-accent)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.hero-text {
+    max-width: 650px;
+    margin-top: 30px;
+    color: var(--color-text-muted);
+    font-size: 18px;
+    line-height: 1.8;
+}
+
+.hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 35px;
+}
+
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 12px 25px;
+    border-radius: var(--radius-pill);
+    color: var(--color-white);
+    background: linear-gradient(
+        135deg,
+        var(--color-primary),
+        var(--color-secondary)
+    );
+    font-size: 15px;
+    font-weight: 600;
+    box-shadow: 0 10px 25px var(--glow-primary);
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px var(--glow-primary);
+}
+
+.btn-outline {
+    color: var(--color-primary);
+    background: var(--glass-background-light);
+    border: 1px solid var(--border-primary);
+    box-shadow: none;
+    backdrop-filter: blur(10px);
+}
+
+.btn-outline:hover {
+    background: var(--glass-background-strong);
+}
+
+
+/* =====================================================
+   SECTION HEADINGS
+===================================================== */
+
+.section-heading {
+    max-width: 700px;
+    margin-bottom: 50px;
+}
+
+.section-heading h2 {
+    margin-bottom: 20px;
+    color: var(--color-text-dark);
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    line-height: 1.1;
+    letter-spacing: -0.04em;
+}
+
+.section-heading > p:last-child {
+    color: var(--color-text-muted);
+    font-size: 17px;
+    line-height: 1.8;
+}
+
+
+/* =====================================================
+   CARDS
+===================================================== */
+
+.services-section {
+    padding-top: 120px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+}
+
+.card {
+    min-height: 260px;
+    padding: 35px;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-large);
+    background: var(--glass-background-light);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 15px 40px var(--shadow-light);
+    transition:
+        transform 0.4s ease,
+        box-shadow 0.4s ease;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px var(--shadow-medium);
+}
+
+.card-icon {
+    display: grid;
+    place-items: center;
+    width: 55px;
+    height: 55px;
+    margin-bottom: 25px;
+    border-radius: 16px;
+    background: linear-gradient(
+        135deg,
+        rgba(99, 102, 241, 0.15),
+        rgba(236, 72, 153, 0.15)
+    );
+    color: var(--color-primary);
+    font-size: 25px;
+}
+
+.card h3 {
+    margin-bottom: 12px;
+    color: var(--color-text);
+    font-size: 22px;
+}
+
+.card p {
+    color: var(--color-text-muted);
+    line-height: 1.7;
+}
+
+
+/* =====================================================
+   CONTACT
+===================================================== */
+
+.contact-section {
+    padding-top: 120px;
+    padding-bottom: 120px;
+}
+
+.contact-box {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 60px 50px;
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-large);
+    text-align: center;
+    background: var(--glass-background-light);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: 0 20px 60px var(--shadow-light);
+}
+
+.contact-box h2 {
+    margin-bottom: 20px;
+    color: var(--color-text-dark);
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.1;
+}
+
+.contact-box p {
+    max-width: 600px;
+    margin: 0 auto 30px;
+    color: var(--color-text-muted);
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.footer {
+    padding: 35px 0;
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: 14px;
+}
+
+
+/* =====================================================
+   ANIMATIONS
+===================================================== */
+
+@keyframes blobMove1 {
+    0% {
+        transform: translate(0, 0) scale(var(--shape-scale-min));
+    }
+
+    50% {
+        transform:
+            translate(
+                var(--blob-movement-x),
+                var(--blob-movement-y)
+            )
+            scale(var(--shape-scale-max));
+    }
+
+    100% {
+        transform:
+            translate(40px, 180px)
+            scale(var(--shape-scale-min));
+    }
+}
+
+@keyframes blobMove2 {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform:
+            translate(
+                calc(var(--blob-movement-x) * -1),
+                var(--blob-movement-y)
+            )
+            scale(var(--shape-scale-max));
+    }
+
+    100% {
+        transform:
+            translate(-40px, -100px)
+            scale(var(--shape-scale-min));
+    }
+}
+
+@keyframes blobMove3 {
+    0% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    50% {
+        transform:
+            translate(
+                calc(var(--blob-movement-x) * -1),
+                calc(var(--blob-movement-y) * -1)
+            )
+            scale(var(--shape-scale-max));
+    }
+
+    100% {
+        transform:
+            translate(120px, -40px)
+            scale(var(--shape-scale-min));
+    }
+}
+
+@keyframes sphereFloat1 {
+    0%, 100% {
+        transform:
+            translate3d(0, 0, 0)
+            rotateX(0deg)
+            rotateY(0deg);
+    }
+
+    50% {
+        transform:
+            translate3d(-60px, 90px, 80px)
+            rotateX(var(--rotate-x))
+            rotateY(var(--rotate-y));
+    }
+}
+
+@keyframes sphereFloat2 {
+    0%, 100% {
+        transform:
+            translate3d(0, 0, 0)
+            rotateY(0deg);
+    }
+
+    50% {
+        transform:
+            translate3d(80px, -60px, 60px)
+            rotateY(var(--rotate-z));
+    }
+}
+
+@keyframes orbFloat1 {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform:
+            translate(
+                var(--orb-movement-x),
+                calc(var(--orb-movement-y) * -1)
+            );
+    }
+}
+
+@keyframes orbFloat2 {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform:
+            translate(
+                calc(var(--orb-movement-x) * -1),
+                var(--orb-movement-y)
+            );
+    }
+}
+
+@keyframes orbFloat3 {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+
+    50% {
+        transform:
+            translate(
+                calc(var(--orb-movement-x) * 0.6),
+                calc(var(--orb-movement-y) * -1)
+            );
+    }
+}
+
+@keyframes rotateRing {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media (max-width: 900px) {
+
+    .nav {
+        gap: 20px;
+    }
+
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .hero h1 {
+        font-size: clamp(3rem, 9vw, 5rem);
+    }
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 768px) {
+
+    .header {
+        top: 12px;
+    }
+
+    .header-inner {
+        min-height: 58px;
+        padding: 8px 14px;
+    }
+
+    .nav {
+        display: none;
+        position: absolute;
+        top: 70px;
+        right: 0;
+        width: 220px;
+        padding: 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+        border-radius: 22px;
+        background: var(--glass-background-strong);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 15px 40px var(--shadow-medium);
+    }
+
+    .nav.active {
+        display: flex;
+    }
+
+    .nav a {
+        width: 100%;
+        padding: 12px 10px;
+        border-radius: var(--radius-small);
+    }
+
+    .nav a:hover {
+        background: rgba(99, 102, 241, 0.08);
+    }
+
+    .menu-btn {
+        display: flex;
+    }
+
+    .hero {
+        min-height: 100svh;
+        padding-top: 120px;
+    }
+
+    .hero-text {
+        font-size: 16px;
+    }
+
+    .section {
+        padding: 75px 0;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .card {
+        min-height: auto;
+        padding: 28px;
+    }
+
+    .contact-box {
+        padding: 45px 25px;
+    }
+
+    .blob-1 {
+        width: 300px;
+        height: 300px;
+    }
+
+    .blob-2 {
+        width: 280px;
+        height: 280px;
+    }
+
+    .blob-3 {
+        width: 320px;
+        height: 320px;
+    }
+
+    .sphere-1 {
+        width: 110px;
+        height: 110px;
+        right: 5%;
+    }
+
+    .sphere-2 {
+        width: 80px;
+        height: 80px;
+    }
+
+    .ring-1 {
+        width: 350px;
+        height: 350px;
+    }
+
+    .ring-2 {
+        width: 250px;
+        height: 250px;
+    }
+}
+
+
+/* =====================================================
+   SMALL PHONES
+===================================================== */
+
+@media (max-width: 480px) {
+
+    .container {
+        width: 92%;
+    }
+
+    .hero {
+        padding-top: 110px;
+    }
+
+    .hero h1 {
+        font-size: 3rem;
+    }
+
+    .hero-text {
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .section-heading h2 {
+        font-size: 2.3rem;
+    }
+
+    .contact-box {
+        border-radius: 22px;
+    }
+
+    .orb-1 {
+        left: 5%;
+    }
+
+    .orb-2 {
+        right: 5%;
+    }
+}
+
+
+/* =====================================================
+   REDUCED MOTION
+===================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+        scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
