@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Responsive website starter with configurable animated abstract background">
+    <title>Modern Responsive Website</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Animated abstract background -->
+    <div class="abstract-bg" aria-hidden="true">
+        <div class="shape blob blob-1 shape-circle shape-purple"></div>
+        <div class="shape blob blob-2 shape-ellipse shape-pink"></div>
+        <div class="shape blob blob-3 shape-rounded shape-cyan"></div>
+
+        <div class="shape shape-3d shape-sphere sphere-1"></div>
+        <div class="shape shape-3d shape-glass-sphere sphere-2"></div>
+
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+
+        <div class="shape-ring ring-1"></div>
+        <div class="shape-ring ring-2"></div>
+    </div>
+
+    <!-- Floating glass header -->
+    <header class="header">
+        <div class="container header-inner">
+
+            <a href="#home" class="logo" aria-label="Home">
+                <!-- Replace this with your SVG:
+                <img src="images/logo.svg" alt="Website Logo">
+                -->
+                <span class="logo-mark">✦</span>
+                <span class="logo-text">Brand</span>
+            </a>
+
+            <nav class="nav" id="mainNav">
+                <a href="#home">Home</a>
+                <a href="#about">About</a>
+                <a href="#services">Services</a>
+                <a href="#contact">Contact</a>
+            </nav>
+
+            <button
+                class="menu-btn"
+                id="menuBtn"
+                type="button"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+                aria-controls="mainNav"
+            >
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero -->
+        <section id="home" class="hero section">
+            <div class="container">
+                <div class="hero-content">
+                    <p class="eyebrow">Welcome</p>
+
+                    <h1>
+                        Create Something
+                        <span>Beautiful.</span>
+                    </h1>
+
+                    <p class="hero-text">
+                        A clean responsive starter website with a
+                        configurable transparent 2D/3D abstract
+                        animated background.
+                    </p>
+
+                    <div class="hero-buttons">
+                        <a href="#about" class="btn">Explore</a>
+                        <a href="#contact" class="btn btn-outline">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About -->
+        <section id="about" class="section">
+            <div class="container">
+                <div class="section-heading">
+                    <p class="eyebrow">About</p>
+                    <h2>Build Your Website Your Way</h2>
+                    <p>
+                        Use the CSS variables at the top of style.css
+                        to change colours, shapes, transparency,
+                        animation speed and 2D/3D appearance.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services -->
+        <section id="services" class="section services-section">
+            <div class="container">
+                <div class="section-heading">
+                    <p class="eyebrow">What We Do</p>
+                    <h2>Our Services</h2>
+                </div>
+
+                <div class="cards">
+                    <article class="card">
+                        <div class="card-icon">✦</div>
+                        <h3>Creative Design</h3>
+                        <p>Modern visual layouts for your website.</p>
+                    </article>
+
+                    <article class="card">
+                        <div class="card-icon">◈</div>
+                        <h3>Responsive Layout</h3>
+                        <p>Designed to work across phones, tablets and desktops.</p>
+                    </article>
+
+                    <article class="card">
+                        <div class="card-icon">◎</div>
+                        <h3>SVG Graphics</h3>
+                        <p>Lightweight scalable graphics and animations.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact -->
+        <section id="contact" class="section contact-section">
+            <div class="container">
+                <div class="contact-box">
+                    <p class="eyebrow">Contact</p>
+                    <h2>Let's Work Together</h2>
+                    <p>
+                        Replace this section with your contact form,
+                        phone number, email or call-to-action.
+                    </p>
+                    <a href="mailto:hello@example.com" class="btn">Get In Touch</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 My Website. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
