@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#172554">
+  <title>Bible Presenter</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <div class="brand-mark" aria-hidden="true">✦</div>
+      <div><h1>Bible Presenter</h1><p>Read and present scripture, verse by verse</p></div>
+    </div>
+    <button id="themeToggle" class="icon-button" type="button" aria-label="Toggle dark mode">◐</button>
+  </header>
+
+  <main class="app-shell">
+    <section class="toolbar" aria-label="Bible navigation">
+      <label>Testament
+        <select id="testamentSelect">
+          <option value="old">Old Testament</option>
+          <option value="new">New Testament</option>
+        </select>
+      </label>
+      <label>Book
+        <select id="bookSelect"></select>
+      </label>
+      <label>Chapter
+        <select id="chapterSelect"></select>
+      </label>
+    </section>
+
+    <section class="chapter-heading">
+      <div>
+        <p class="eyebrow" id="testamentLabel">OLD TESTAMENT</p>
+        <h2 id="chapterTitle">Genesis 1</h2>
+        <p id="chapterMeta" class="muted"></p>
+      </div>
+      <div class="chapter-actions">
+        <button id="prevChapter" class="secondary" type="button">← Previous</button>
+        <button id="nextChapter" class="secondary" type="button">Next →</button>
+      </div>
+    </section>
+
+    <section id="verses" class="verse-list" aria-live="polite"></section>
+
+    <footer class="app-footer">
+      <span id="footerReference">King James Bible · Pure Cambridge Edition</span>
+      <button id="topButton" class="text-button" type="button">Back to top ↑</button>
+    </footer>
+  </main>
+
+  <script src="data/bible-content.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
