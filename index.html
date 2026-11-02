@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#14213d">
+  <meta name="description" content="A Bible reading and presentation app with three Bible translations and text-to-speech reading.">
+  <title>Bible Presenter</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Bible Presenter home">
+      <span class="brand-mark" aria-hidden="true">✦</span>
+      <span>Bible <strong>Presenter</strong></span>
+    </a>
+    <span class="topbar-note">Read · Reflect · Present</span>
+  </header>
+
+  <main class="page">
+    <section class="intro">
+      <p class="eyebrow">YOUR SCRIPTURE READING SPACE</p>
+      <h1>Explore the <span>Word</span></h1>
+      <p class="intro-copy">Choose a Bible translation and passage. Read each verse clearly, or listen with the built-in voice reader.</p>
+    </section>
+
+    <section class="control-card" aria-label="Bible passage controls">
+      <div class="select-grid">
+        <label class="field">
+          <span>Bible version</span>
+          <select id="versionSelect">
+            <option value="kjv">King James Version (KJV)</option>
+            <option value="web">World English Bible (WEB)</option>
+            <option value="webster">Webster's Bible (WEBSTER)</option>
+          </select>
+        </label>
+        <label class="field">
+          <span>Book</span>
+          <select id="bookSelect"></select>
+        </label>
+        <label class="field">
+          <span>Chapter</span>
+          <select id="chapterSelect"></select>
+        </label>
+      </div>
+
+      <div class="toolbar">
+        <div class="navigation">
+          <button class="button button-quiet" id="prevButton" type="button" aria-label="Previous chapter">← <span>Previous</span></button>
+          <button class="button button-quiet" id="nextButton" type="button"><span>Next</span> →</button>
+        </div>
+        <div class="voice-controls">
+          <label class="voice-field" for="voiceSelect">Voice</label>
+          <select id="voiceSelect" aria-label="Reading voice">
+            <option value="">Default voice</option>
+          </select>
+          <button class="button button-listen" id="readButton" type="button">▶ <span>Read chapter</span></button>
+          <button class="button button-stop" id="stopButton" type="button" disabled>■ <span>Stop</span></button>
+        </div>
+      </div>
+      <p class="status" id="statusMessage" role="status" aria-live="polite">Ready to read.</p>
+    </section>
+
+    <section class="passage" aria-live="polite">
+      <div class="passage-heading">
+        <div>
+          <p class="eyebrow" id="versionLabel">KING JAMES VERSION</p>
+          <h2 id="passageTitle">Loading Bible…</h2>
+        </div>
+        <span class="verse-count" id="verseCount"></span>
+      </div>
+      <div id="verseList" class="verse-list"></div>
+    </section>
+    <footer class="footer">Bible Presenter <span>·</span> Select a verse to hear it read aloud.</footer>
+  </main>
+
+  <script src="data/kjv-content.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
