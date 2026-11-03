@@ -4,7 +4,8 @@
   const DATA_FILES = {
     kjv: "data/kjv-content.js",
     web: "data/web-content.js",
-    webster: "data/webster-content.js"
+    webster: "data/webster-content.js",
+    webc: "data/webc-content.js"
   };
 
   const versionSelect = document.getElementById("versionSelect");
@@ -20,6 +21,8 @@
   const stopButton = document.getElementById("stopButton");
   const prevButton = document.getElementById("prevButton");
   const nextButton = document.getElementById("nextButton");
+  const readingModeToggle = document.getElementById("readingModeToggle");
+  const passage = document.querySelector(".passage");
 
   let currentData = null;
   let currentVersion = "kjv";
@@ -91,10 +94,10 @@
     const book = bookSelect.value;
     const chapter = chapterSelect.value;
     const verses = currentData.books?.[book]?.[chapter] || {};
-    const entries = Object.entries(verses).sort((a, b) => Number(a[0]) - Number(b[0]));
+    const entries = Object.entries(verses).sort((a, b) => parseInt(a[0], 10) - parseInt(b[0], 10));
 
     passageTitle.textContent = `${book} ${chapter}`;
-    versionLabel.textContent = currentData.version.toUpperCase();
+    versionLabel.textContent = currentData.abbreviation || currentData.version.toUpperCase();
     verseCount.textContent = `${entries.length} ${entries.length === 1 ? "verse" : "verses"}`;
     verseList.innerHTML = "";
 
@@ -238,7 +241,7 @@
     const chapter = chapterSelect.value;
     const verses = currentData.books[book][chapter];
     const text = Object.entries(verses)
-      .sort((a, b) => Number(a[0]) - Number(b[0]))
+      .sort((a, b) => parseInt(a[0], 10) - parseInt(b[0], 10))
       .map(([number, verse]) => `Verse ${number}. ${verse}`)
       .join(" ");
     speakText(text, null, `${book} ${chapter}`);
@@ -251,6 +254,24 @@
     stopButton.disabled = true;
     readButton.disabled = false;
   }
+
+
+  // Reading appearance is local to the Scripture panel and works offline.
+  function setReadingMode(mode) {
+    const isNight = mode === "night";
+    passage.classList.toggle("night-reading", isNight);
+    readingModeToggle.textContent = isNight ? "☀ Day mode" : "☾ Night mode";
+    readingModeToggle.setAttribute("aria-pressed", String(isNight));
+  }
+
+  let savedReadingMode = "day";
+  try { savedReadingMode = localStorage.getItem("bibleReadingMode") || "day"; } catch (error) { /* Storage may be unavailable in local-file mode. */ }
+  setReadingMode(savedReadingMode);
+  readingModeToggle.addEventListener("click", () => {
+    const nextMode = passage.classList.contains("night-reading") ? "day" : "night";
+    setReadingMode(nextMode);
+    try { localStorage.setItem("bibleReadingMode", nextMode); } catch (error) { /* The toggle still works for this session. */ }
+  });
 
   versionSelect.addEventListener("change", event => loadVersion(event.target.value));
   bookSelect.addEventListener("change", populateChapters);
