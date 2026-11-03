@@ -1,33 +1,36 @@
-# Bible Information Centre — Foundation 1.0
+# Bible Information Centre — Foundation 1.1
 
-A self-contained, offline-first Bible application built with plain HTML, CSS and JavaScript.
+A self-contained Bible reading and information-centre foundation built with plain HTML, CSS and JavaScript. It runs locally without a server, database, framework, external library or internet connection.
 
 ## Run
-Open `index.html` in a modern browser. No server, database, internet connection, framework or external library is required.
+Open `index.html` in a modern browser. All Bible text, styles and scripts are stored in this folder.
 
-## Included
-- Responsive application shell with navigation sidebar
-- Dashboard and Bible Explorer category landing page
-- Existing Bible Reader using three local translations
-- Individual verse panels and browser speech synthesis
-- Navigation placeholders for future catalogues, genealogy, chronology, search and comparison
-- Bible text stored in local JavaScript files
+## Included Bible translations
+- King James Version (KJV) — 66 books
+- World English Bible (WEB) — 66 books
+- Webster’s Bible (WEBSTER) — 66 books
+- World English Bible Catholic Edition (WEB-C) — 73 books
+
+WEB and WEB-C are separate editions with separate data files. The WEB-C book list includes the Catholic book order and the source’s Greek-labelled forms of Esther and Daniel.
+
+## Reader features
+- Select a translation, book and chapter
+- Navigate between chapters
+- Display individual verses
+- Read a verse or chapter using browser speech synthesis (offline voice availability depends on the device)
+- Day and night appearance for the Scripture reading panel
+- Local translation data loaded from JavaScript files
 
 ## Structure
-- `index.html` — application shell and local script loading
-- `css/styles.css` — responsive visual design
+- `index.html` — application shell
+- `css/styles.css` — application styling and reading modes
 - `js/app.js` — navigation and view management
 - `js/reader.js` — Bible reader, translation loading and speech controls
-- `data/` — Bible translation data
+- `data/` — four independent Bible translation data files
+- `sources/WEB-C-Source-Notes.txt` — WEB-C source and conversion notes
 
 ## Offline notes
-No external fonts, images, stylesheets, libraries, APIs or network requests are used. Bible translations are loaded as local script files. Available speech voices depend on the device and browser; some devices may require an installed offline voice.
+No external fonts, images, stylesheets, libraries, APIs or network requests are used. Translation files are loaded locally as classic JavaScript files, avoiding `fetch()` restrictions that can affect pages opened directly from local storage. The day/night reading preference is saved locally when browser storage is available; the toggle still works for the current session if storage is blocked.
 
-Keep the `data` folder beside `index.html`. Do not rename the Bible data files unless their paths in `js/reader.js` are updated.
-
-## Next phases
-1. Reusable Bible reference and data-loading engines
-2. Side-by-side translation comparison
-3. Local full-text and topic search
-4. Structured topic catalogues and cross-references
-5. Genealogy and chronology visualisations
+## Future development
+The existing navigation includes planned areas for parables, prophets, apostles, people, angels, miracles, events, places, teachings, genealogy, chronology, search and translation comparison. These can be developed in stages without merging the translation datasets.
