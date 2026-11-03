@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#172554">
+<meta name="description" content="An offline Bible reading and information centre."><title>Bible Information Centre</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="app-shell">
+<aside class="sidebar" id="sidebar">
+<a class="brand" href="#dashboard"><span class="brand-mark">✦</span><span class="brand-name">Bible <strong>Information Centre</strong></span></a>
+<div class="sidebar-label">MAIN MENU</div>
+<nav class="main-nav" aria-label="Main navigation">
+<button class="nav-item active" data-view="dashboard"><span class="nav-icon">⌂</span>Dashboard</button>
+<button class="nav-item" data-view="reader"><span class="nav-icon">▤</span>Bible Reader</button>
+<button class="nav-item" data-view="explorer"><span class="nav-icon">◇</span>Bible Explorer<span class="nav-chevron">›</span></button>
+<div class="nav-submenu" id="explorerSubmenu">
+<button class="subnav-item" data-view="parables">Parables</button><button class="subnav-item" data-view="prophets">Prophets</button><button class="subnav-item" data-view="apostles">Apostles</button><button class="subnav-item" data-view="characters">People &amp; Characters</button><button class="subnav-item" data-view="angels">Angels</button><button class="subnav-item" data-view="miracles">Miracles</button><button class="subnav-item" data-view="events">Events</button><button class="subnav-item" data-view="places">Places</button><button class="subnav-item" data-view="teachings">Teachings</button>
+</div>
+<button class="nav-item" data-view="genealogy"><span class="nav-icon">♧</span>Genealogy</button><button class="nav-item" data-view="chronology"><span class="nav-icon">◷</span>Chronology</button><button class="nav-item" data-view="search"><span class="nav-icon">⌕</span>Bible Search</button><button class="nav-item" data-view="comparison"><span class="nav-icon">⇄</span>Compare Versions</button>
+</nav>
+<div class="sidebar-bottom"><div class="offline-badge"><span></span>Works offline</div><p>All Bible text and reference information is stored locally on this device.</p><div class="sidebar-version">Foundation build 1.0</div></div>
+</aside>
+<div class="main-area">
+<header class="topbar"><button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button><div class="breadcrumb"><span>Bible Information Centre</span><b>/</b><strong id="currentPageLabel">Dashboard</strong></div><span class="offline-indicator">● Offline mode</span></header>
+<main class="content-area">
+<section class="view active-view" id="view-dashboard">
+<div class="welcome-panel"><p class="eyebrow">YOUR PERSONAL SCRIPTURE RESOURCE</p><h1>Explore the <span>Bible</span></h1><p class="welcome-copy">Read Scripture, discover biblical people and events, explore family lines, follow the timeline of the Bible, and compare translations — all in one offline place.</p><button class="primary-button" data-go="reader">Open Bible Reader <span>→</span></button><div class="welcome-decoration" aria-hidden="true">✦<i></i><b></b></div></div>
+<div class="section-title-row"><div><p class="eyebrow">START EXPLORING</p><h2>Explore the Centre</h2></div><p class="section-hint">Choose an area to get started.</p></div>
+<div class="feature-grid">
+<button class="feature-card" data-go="reader"><span class="feature-icon blue">▤</span><span class="feature-title">Bible Reader</span><span class="feature-description">Read and listen to Scripture in three Bible versions.</span><span class="feature-arrow">→</span></button>
+<button class="feature-card" data-go="explorer"><span class="feature-icon orange">◇</span><span class="feature-title">Bible Explorer</span><span class="feature-description">Discover people, prophets, parables, miracles and teachings.</span><span class="feature-arrow">→</span></button>
+<button class="feature-card" data-go="genealogy"><span class="feature-icon green">♧</span><span class="feature-title">Genealogy</span><span class="feature-description">Explore biblical family lines and relationships.</span><span class="feature-arrow">→</span></button>
+<button class="feature-card" data-go="chronology"><span class="feature-icon purple">◷</span><span class="feature-title">Chronology</span><span class="feature-description">Follow important events across biblical history.</span><span class="feature-arrow">→</span></button>
+<button class="feature-card" data-go="search"><span class="feature-icon teal">⌕</span><span class="feature-title">Bible Search</span><span class="feature-description">Find words, phrases, passages and topics.</span><span class="feature-arrow">→</span></button>
+<button class="feature-card" data-go="comparison"><span class="feature-icon rose">⇄</span><span class="feature-title">Compare Versions</span><span class="feature-description">View the same Scripture passage in all three translations.</span><span class="feature-arrow">→</span></button>
+</div>
+<div class="foundation-note"><span class="note-icon">✦</span><div><strong>A growing Bible knowledge library</strong><p>This is the foundation. Topic catalogues, genealogy records, timelines, search and comparison tools will be added in stages and connected to the same Scripture reference engine.</p></div></div>
+</section>
+<section class="view" id="view-reader">
+<div class="page-heading"><p class="eyebrow">READ AND LISTEN</p><h1>Bible <span>Reader</span></h1><p>Select a translation, book and chapter. Each verse appears in its own panel.</p></div>
+<section class="control-card" aria-label="Bible passage controls"><div class="select-grid">
+<label class="field"><span>Bible version</span><select id="versionSelect"><option value="kjv">King James Version (KJV)</option><option value="web">World English Bible (WEB)</option><option value="webster">Webster's Bible (WEBSTER)</option></select></label>
+<label class="field"><span>Book</span><select id="bookSelect"></select></label><label class="field"><span>Chapter</span><select id="chapterSelect"></select></label></div>
+<div class="toolbar"><div class="navigation"><button class="button button-quiet" id="prevButton" type="button">← <span>Previous</span></button><button class="button button-quiet" id="nextButton" type="button"><span>Next</span> →</button></div><div class="voice-controls"><label class="voice-field" for="voiceSelect">Voice</label><select id="voiceSelect" aria-label="Reading voice"><option value="">Default voice</option></select><button class="button button-listen" id="readButton" type="button">▶ <span>Read chapter</span></button><button class="button button-stop" id="stopButton" type="button" disabled>■ <span>Stop</span></button></div></div>
+<p class="status" id="statusMessage" role="status" aria-live="polite">Ready to read.</p></section>
+<section class="passage" aria-live="polite"><div class="passage-heading"><div><p class="eyebrow" id="versionLabel">KING JAMES VERSION</p><h2 id="passageTitle">Loading Bible…</h2></div><span class="verse-count" id="verseCount"></span></div><div id="verseList" class="verse-list"></div></section>
+</section>
+<section class="view" id="view-explorer"><div class="page-heading"><p class="eyebrow">DISCOVER SCRIPTURE</p><h1>Bible <span>Explorer</span></h1><p>Explore the people, teachings, places and events recorded in the Bible.</p></div><div class="category-grid">
+<button class="category-card" data-go="parables"><b>Parables</b><span>Stories Jesus used to teach spiritual truths.</span>→</button><button class="category-card" data-go="prophets"><b>Prophets</b><span>Messengers who spoke God's words.</span>→</button><button class="category-card" data-go="apostles"><b>Apostles</b><span>The people sent to spread the Gospel.</span>→</button><button class="category-card" data-go="characters"><b>People &amp; Characters</b><span>Profiles and relationships of biblical people.</span>→</button><button class="category-card" data-go="angels"><b>Angels</b><span>Angelic beings and what Scripture says about them.</span>→</button><button class="category-card" data-go="miracles"><b>Miracles</b><span>Signs and wonders recorded in Scripture.</span>→</button><button class="category-card" data-go="events"><b>Events</b><span>Important moments in biblical history.</span>→</button><button class="category-card" data-go="places"><b>Places</b><span>Locations, regions and places in the Bible.</span>→</button><button class="category-card" data-go="teachings"><b>Teachings</b><span>Key themes and teachings of Scripture.</span>→</button>
+</div></section>
+<section class="view placeholder-view" id="view-placeholder"><div class="placeholder-symbol">✦</div><p class="eyebrow">FOUNDATION READY</p><h1 id="placeholderTitle">Coming next</h1><p id="placeholderText">This section has been included in the application structure. Its information catalogue and interactive features will be added in a later development phase.</p><button class="primary-button" data-go="dashboard">Return to Dashboard <span>→</span></button></section>
+</main>
+<footer class="app-footer"><span>Bible Information Centre</span><span>Self-contained · Offline · No server required</span></footer>
+</div></div>
+<script src="data/kjv-content.js"></script><script src="js/reader.js"></script><script src="js/app.js"></script>
+</body></html>
