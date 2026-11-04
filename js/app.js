@@ -7,6 +7,7 @@
     const explorerItems=["explorer","parables","prophets","apostles","characters","angels","miracles","events","places","teachings"];
     navButtons.forEach(b=>b.classList.toggle("active",b.dataset.view===name||(explorerItems.includes(name)&&b.dataset.view==="explorer")));
     if(explorerItems.includes(name))submenu.classList.add("open");pageLabel.textContent=labels[name];sidebar.classList.remove("sidebar-open");window.scrollTo({top:0,behavior:"smooth"});}
+  window.showBibleView=showView;
   navButtons.forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));goButtons.forEach(b=>b.addEventListener("click",()=>showView(b.dataset.go)));
   document.getElementById("menuToggle").addEventListener("click",()=>sidebar.classList.toggle("sidebar-open"));document.addEventListener("keydown",e=>{if(e.key==="Escape")sidebar.classList.remove("sidebar-open");});showView("dashboard");
 })();

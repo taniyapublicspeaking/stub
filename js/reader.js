@@ -281,6 +281,20 @@
   readButton.addEventListener("click", readChapter);
   stopButton.addEventListener("click", stopReading);
 
+  // Public bridge used by catalogue entries to open a cited passage in the reader.
+  window.BibleReader = {
+    openPassage(book, chapter) {
+      if (!currentData || !currentData.books || !currentData.books[book]) return false;
+      bookSelect.value = book;
+      populateChapters();
+      const requested = String(chapter);
+      if (![...chapterSelect.options].some(option => option.value === requested)) return false;
+      chapterSelect.value = requested;
+      renderChapter();
+      return true;
+    }
+  };
+
   if ("speechSynthesis" in window) {
     populateVoices();
     window.speechSynthesis.onvoiceschanged = populateVoices;
