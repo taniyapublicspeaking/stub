@@ -23,6 +23,13 @@
   const nextButton = document.getElementById("nextButton");
   const readingModeToggle = document.getElementById("readingModeToggle");
   const passage = document.querySelector(".passage");
+  const fontDecrease = document.getElementById("fontDecrease");
+  const fontIncrease = document.getElementById("fontIncrease");
+  const fontReset = document.getElementById("fontReset");
+  const DEFAULT_FONT_SIZE = 18;
+  const MIN_FONT_SIZE = 14;
+  const MAX_FONT_SIZE = 30;
+  let readingFontSize = DEFAULT_FONT_SIZE;
 
   let currentData = null;
   let currentVersion = "kjv";
@@ -240,10 +247,12 @@
     const book = bookSelect.value;
     const chapter = chapterSelect.value;
     const verses = currentData.books[book][chapter];
+    // Keep verse numbers visible in the interface, but speak only Scripture text.
     const text = Object.entries(verses)
       .sort((a, b) => parseInt(a[0], 10) - parseInt(b[0], 10))
-      .map(([number, verse]) => `Verse ${number}. ${verse}`)
-      .join(" ");
+      .map(([, verse]) => String(verse).trim())
+      .filter(Boolean)
+      .join("\n");
     speakText(text, null, `${book} ${chapter}`);
   }
 
@@ -273,6 +282,23 @@
     try { localStorage.setItem("bibleReadingMode", nextMode); } catch (error) { /* The toggle still works for this session. */ }
   });
 
+  function setReadingFontSize(size, save = true) {
+    readingFontSize = Math.max(MIN_FONT_SIZE, Math.min(MAX_FONT_SIZE, size));
+    passage.style.setProperty("--reading-font-size", `${readingFontSize}px`);
+    if (save) { try { localStorage.setItem("bibleReadingFontSize", String(readingFontSize)); } catch (error) { /* Session-only fallback. */ } }
+    fontDecrease.disabled = readingFontSize <= MIN_FONT_SIZE;
+    fontIncrease.disabled = readingFontSize >= MAX_FONT_SIZE;
+    fontReset.setAttribute("aria-label", `Reset reading text size to ${DEFAULT_FONT_SIZE} pixels`);
+  }
+  try {
+    const storedSize = Number(localStorage.getItem("bibleReadingFontSize"));
+    if (Number.isFinite(storedSize) && storedSize >= MIN_FONT_SIZE && storedSize <= MAX_FONT_SIZE) readingFontSize = storedSize;
+  } catch (error) { /* Storage may be unavailable for local files. */ }
+  setReadingFontSize(readingFontSize, false);
+  fontDecrease.addEventListener("click", () => setReadingFontSize(readingFontSize - 2));
+  fontIncrease.addEventListener("click", () => setReadingFontSize(readingFontSize + 2));
+  fontReset.addEventListener("click", () => setReadingFontSize(DEFAULT_FONT_SIZE));
+
   versionSelect.addEventListener("change", event => loadVersion(event.target.value));
   bookSelect.addEventListener("change", populateChapters);
   chapterSelect.addEventListener("change", renderChapter);
@@ -284,8 +310,10 @@
   // Public bridge used by catalogue entries to open a cited passage in the reader.
   window.BibleReader = {
     openPassage(book, chapter) {
-      if (!currentData || !currentData.books || !currentData.books[book]) return false;
-      bookSelect.value = book;
+      if (!currentData || !currentData.books) return false;
+      const bookAlias = currentData.books[book] ? book : (book === "Daniel" && currentData.books["Daniel (Greek)"] ? "Daniel (Greek)" : book);
+      if (!currentData.books[bookAlias]) return false;
+      bookSelect.value = bookAlias;
       populateChapters();
       const requested = String(chapter);
       if (![...chapterSelect.options].some(option => option.value === requested)) return false;

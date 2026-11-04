@@ -9,5 +9,24 @@
     if(explorerItems.includes(name))submenu.classList.add("open");pageLabel.textContent=labels[name];sidebar.classList.remove("sidebar-open");window.scrollTo({top:0,behavior:"smooth"});}
   window.showBibleView=showView;
   navButtons.forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));goButtons.forEach(b=>b.addEventListener("click",()=>showView(b.dataset.go)));
-  document.getElementById("menuToggle").addEventListener("click",()=>sidebar.classList.toggle("sidebar-open"));document.addEventListener("keydown",e=>{if(e.key==="Escape")sidebar.classList.remove("sidebar-open");});showView("dashboard");
+  const shell=document.querySelector(".app-shell");
+  const menuToggle=document.getElementById("menuToggle");
+  let panelCollapsed=false;
+  try { panelCollapsed=localStorage.getItem("bibleSidebarCollapsed")==="true"; } catch(error) {}
+  function setPanelState(collapsed){
+    panelCollapsed=collapsed;
+    shell.classList.toggle("sidebar-collapsed",collapsed);
+    menuToggle.setAttribute("aria-expanded",String(!collapsed));
+    menuToggle.setAttribute("aria-label",collapsed?"Maximise navigation panel":"Minimise navigation panel");
+    menuToggle.title=collapsed?"Maximise navigation panel":"Minimise navigation panel";
+    menuToggle.textContent=collapsed?"☰":"☰";
+    try { localStorage.setItem("bibleSidebarCollapsed",String(collapsed)); } catch(error) {}
+  }
+  setPanelState(panelCollapsed);
+  menuToggle.addEventListener("click",()=>{
+    if(window.matchMedia("(max-width: 760px)").matches){sidebar.classList.toggle("sidebar-open");menuToggle.setAttribute("aria-expanded",String(sidebar.classList.contains("sidebar-open")));}
+    else setPanelState(!panelCollapsed);
+  });
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")sidebar.classList.remove("sidebar-open");});
+  showView("dashboard");
 })();
