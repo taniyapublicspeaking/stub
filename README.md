@@ -34,3 +34,11 @@ No external fonts, images, stylesheets, libraries, APIs or network requests are 
 
 ## Future development
 The existing navigation includes planned areas for parables, prophets, apostles, people, angels, miracles, events, places, teachings, genealogy, chronology, search and translation comparison. These can be developed in stages without merging the translation datasets.
+
+## Parables catalogue — Foundation 1.2
+- Includes a curated catalogue of 33 parables and parable-like illustrations of Jesus.
+- Search by title, theme, description or Scripture reference; filter by theme.
+- Open an entry to read a short summary, its main teaching and Gospel references.
+- Each reference can open the corresponding book and chapter in the local Bible Reader.
+- The catalogue is stored in `data/parables.js` and works without internet access.
+- Counts and groupings of parables vary among Bible teachers; the catalogue is therefore described as curated rather than exhaustive or definitive.

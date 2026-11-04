@@ -49,9 +49,16 @@
 <section class="view" id="view-explorer"><div class="page-heading"><p class="eyebrow">DISCOVER SCRIPTURE</p><h1>Bible <span>Explorer</span></h1><p>Explore the people, teachings, places and events recorded in the Bible.</p></div><div class="category-grid">
 <button class="category-card" data-go="parables"><b>Parables</b><span>Stories Jesus used to teach spiritual truths.</span>→</button><button class="category-card" data-go="prophets"><b>Prophets</b><span>Messengers who spoke God's words.</span>→</button><button class="category-card" data-go="apostles"><b>Apostles</b><span>The people sent to spread the Gospel.</span>→</button><button class="category-card" data-go="characters"><b>People &amp; Characters</b><span>Profiles and relationships of biblical people.</span>→</button><button class="category-card" data-go="angels"><b>Angels</b><span>Angelic beings and what Scripture says about them.</span>→</button><button class="category-card" data-go="miracles"><b>Miracles</b><span>Signs and wonders recorded in Scripture.</span>→</button><button class="category-card" data-go="events"><b>Events</b><span>Important moments in biblical history.</span>→</button><button class="category-card" data-go="places"><b>Places</b><span>Locations, regions and places in the Bible.</span>→</button><button class="category-card" data-go="teachings"><b>Teachings</b><span>Key themes and teachings of Scripture.</span>→</button>
 </div></section>
+<section class="view" id="view-parables">
+<div class="page-heading"><p class="eyebrow">BIBLE EXPLORER</p><h1>Parables of <span>Jesus</span></h1><p>Explore Jesus’ parables, their central teachings and the Gospel passages where they are recorded.</p></div>
+<div class="parable-tools"><label class="parable-search-label" for="parableSearch">Search parables<input id="parableSearch" type="search" placeholder="Search by title, theme or Scripture reference"></label><label class="parable-filter-label" for="parableCategory">Filter by theme<select id="parableCategory"><option value="all">All themes</option></select></label><span id="parableCount" class="parable-count" aria-live="polite"></span></div>
+<div id="parableDetail" class="parable-detail" hidden aria-live="polite"></div>
+<div id="parableCatalogue"><div id="parableList" class="parable-grid"></div></div>
+<p class="catalogue-note">This is a curated study catalogue, not a claim that every scholar counts or groups the parables in exactly the same way. Some teachings appear in more than one Gospel.</p>
+</section>
 <section class="view placeholder-view" id="view-placeholder"><div class="placeholder-symbol">✦</div><p class="eyebrow">FOUNDATION READY</p><h1 id="placeholderTitle">Coming next</h1><p id="placeholderText">This section has been included in the application structure. Its information catalogue and interactive features will be added in a later development phase.</p><button class="primary-button" data-go="dashboard">Return to Dashboard <span>→</span></button></section>
 </main>
 <footer class="app-footer"><span>Bible Information Centre</span><span>Self-contained · Offline · No server required</span></footer>
 </div></div>
-<script src="data/kjv-content.js"></script><script src="js/reader.js"></script><script src="js/app.js"></script>
+<script src="data/kjv-content.js"></script><script src="js/reader.js"></script><script src="js/app.js"></script><script src="data/parables.js"></script><script src="js/parables.js"></script>
 </body></html>
