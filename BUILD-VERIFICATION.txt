@@ -1,0 +1,19 @@
+BIBLE INFORMATION CENTRE — BUILD 1.3.2
+Stage: Individual book data files and chapter-level search indexes
+
+VERIFIED
+- KJV: 66 books, 1,189 chapters, 31,102 verses.
+- WEB: 66 books, 1,189 chapters, 31,098 verses.
+- WEB-C: 73 books, 1,328 chapters, 35,408 verses.
+- All 205 individual book JavaScript files exist and load through the engine test harness.
+- Genesis 1:1 retrieval verified in all three editions.
+- Search index loading and a multi-word search verified in all three editions.
+- All JavaScript files pass Node syntax checks.
+- All local script and stylesheet references in index.html resolve.
+- No monolithic KJV, WEB or WEB-C data files remain in this build.
+
+IMPLEMENTATION NOTES
+- Uses classic JavaScript files and script-element loading for local-file compatibility.
+- Does not use fetch(), ES modules, external libraries, remote services or a server.
+- Search indexes are chapter-level inverted indexes. Matching verses are verified against the original verse text after the relevant book is loaded.
+- Browser UI testing and testing on the user's Android tablet remain outstanding.

@@ -1,74 +1,70 @@
-# Bible Information Centre — Foundation 1.3
+# Bible Information Centre — Development Build 1.3.1
 
-A self-contained Bible reading and information-centre foundation built with plain HTML, CSS and JavaScript. It runs locally without a server, database, framework, external library or internet connection.
+A self-contained Bible reading and information-centre foundation built with plain HTML, CSS and JavaScript. It is designed to run locally without a server, database, framework, external library or internet connection.
 
 ## Run
-Open `index.html` in a modern browser. All Bible text, styles and scripts are stored in this folder.
+Open `index.html` in a modern browser. Keep the `css`, `data` and `js` folders alongside it. Bible editions are loaded as local classic JavaScript files; the application does not use `fetch()` or JavaScript modules for Bible data, avoiding common `file://` restrictions.
 
-## Included Bible translations
+## Included Bible editions
 - King James Version (KJV) — 66 books
 - World English Bible (WEB) — 66 books
-- Webster’s Bible (WEBSTER) — 66 books
 - World English Bible Catholic Edition (WEB-C) — 73 books
 
-WEB and WEB-C are separate editions with separate data files. The WEB-C book list includes the Catholic book order and the source’s Greek-labelled forms of Esther and Daniel.
+WEB and WEB-C are separate editions with separate data files. WEB-C retains its full 73-book canon, including the source's Greek-labelled forms of Esther and Daniel.
 
 ## Reader features
-- Select a translation, book and chapter
+- Select a Bible edition, book and chapter
 - Navigate between chapters
 - Display individual verses
 - Read a verse or chapter using browser speech synthesis (offline voice availability depends on the device)
-- Day and night appearance for the Scripture reading panel, with a remembered local preference
-- Adjustable Scripture text size (A− / A / A+) with reset and remembered preference
-- Chapter and individual-verse read-aloud speaks Scripture text only; verse labels and numbers are not spoken
-- Local translation data loaded from JavaScript files
+- Day/Night appearance for the Scripture reading panel
+- Adjustable Scripture text size (A− / A / A+) with reset
+- Local edition data loaded on demand and retained in an in-memory cache after loading
 
-## Structure
+## Central Bible Engine
+`js/core/bible-engine.js` is the shared data access layer. It currently:
+- Loads KJV, WEB and WEB-C from local JavaScript data files
+- Validates the expected book count before accepting a translation
+- Caches each loaded edition so switching back does not reload its data
+- Provides common methods to retrieve book lists, chapter lists, chapter verses, individual verses and sorted verse entries
+- Uses ordinary script elements and classic JavaScript, not `fetch()`, modules, a server or external dependencies
+
+The reader now obtains its book, chapter and verse data through this engine. The underlying translation data is still in one file per edition at this stage; migration into individual book files and compact search indexes is a later development task.
+
+## Project structure
 - `index.html` — application shell
-- `css/styles.css` — application styling and reading modes
+- `css/styles.css` — application styling and reading-panel modes
 - `js/app.js` — navigation and view management
-- `js/reader.js` — Bible reader, translation loading and speech controls
-- `data/` — four independent Bible translation data files, plus local topic catalogues
+- `js/reader.js` — reader interface and speech controls; uses the central engine
+- `js/core/bible-engine.js` — central translation loader, cache and Scripture retrieval API
+- `data/` — KJV, WEB and WEB-C data files plus local topic catalogues
 - `sources/WEB-C-Source-Notes.txt` — WEB-C source and conversion notes
 
 ## Offline notes
-No external fonts, images, stylesheets, libraries, APIs or network requests are used. Translation files are loaded locally as classic JavaScript files, avoiding `fetch()` restrictions that can affect pages opened directly from local storage. The day/night reading preference is saved locally when browser storage is available; the toggle still works for the current session if storage is blocked.
+The app uses local stylesheets, scripts and Bible data. No external fonts, images, libraries, APIs or network requests are required. Dynamic Bible data loading uses local classic scripts because local-file `fetch()` can be restricted by browsers. Day/Night and font controls currently apply to the Scripture reading panel only; site-wide controls remain a planned integration task.
 
-## Future development
-The existing navigation includes planned areas for parables, prophets, apostles, people, angels, miracles, events, places, teachings, genealogy, chronology, search and translation comparison. These can be developed in stages without merging the translation datasets.
+## Existing catalogues and planned areas
+The current build includes the Parables and Prophets catalogues. Navigation also contains planned areas for apostles, people, angels, miracles, events, places, teachings, genealogy, chronology, search and translation comparison. These will be developed in stages and connected to the same Scripture engine.
 
-## Parables catalogue — Foundation 1.2
+## Parables catalogue
 - Includes a curated catalogue of 33 parables and parable-like illustrations of Jesus.
 - Search by title, theme, description or Scripture reference; filter by theme.
-- Open an entry to read a short summary, its main teaching and Gospel references.
 - Each reference can open the corresponding book and chapter in the local Bible Reader.
-- The catalogue is stored in `data/parables.js` and works without internet access.
-- Counts and groupings of parables vary among Bible teachers; the catalogue is therefore described as curated rather than exhaustive or definitive.
+- Counts and groupings vary among Bible teachers; the catalogue is described as curated rather than definitive.
 
-
-## Foundation 1.3 additions
-
-### Prophets catalogue
+## Prophets catalogue
 - Includes 41 curated entries covering named prophets and prophetesses from both Testaments.
 - Search by name, period, role, summary or Scripture reference.
 - Filter by Testament, prophetess, Major Prophets, Minor Prophets or other prophetic figures.
-- Open an entry to see an overview and Scripture references; references open the corresponding chapter in the currently selected Bible version.
-- The catalogue distinguishes traditional book groupings from other prophetic figures and notes where the biblical record is brief or dating is debated.
-- WEB-C uses its source book label `Daniel (Greek)`; the reader maps the catalogue's canonical Daniel references to that book automatically.
+- WEB-C uses its source book label `Daniel (Greek)`; the reader maps canonical Daniel references to that book.
 
-### Navigation panel
-- The left navigation panel can be collapsed and restored with the top-left menu button on desktop.
-- On smaller screens, the same button opens and closes the slide-in navigation panel.
-- The last desktop collapsed/expanded preference is stored locally where browser storage is available.
+## Development and testing status
+- The source archive is preserved separately as the Version 1.3 backup.
+- JavaScript syntax checks pass for the new engine, reader and app scripts.
+- A direct engine test loaded all three local edition files, checked their book counts and retrieved Genesis 1:1 and Genesis 1 verse entries successfully.
+- Full interactive browser testing and physical Android tablet testing have not yet been completed.
 
-### Reading controls
-- The reading toolbar contains Day/Night, A−, A and A+ controls.
-- Font size ranges from 14px to 30px in 2px increments; A resets to 18px.
-- Reading mode and font size are saved locally where browser storage is available; controls continue to work for the current session if storage is blocked.
-- Verse numbers remain visible on screen but are excluded from all speech output. A line break separates verse text in chapter playback to encourage natural pauses.
+## Bible data layout (Build 1.3.2)
+The three supported editions are stored as individual classic JavaScript files under `data/bible/kjv/`, `data/bible/web/` and `data/bible/webc/` (205 books total). `data/bible-catalog.js` supplies book order and chapter lists. The compact inverted indexes are under `data/search-index/`. The Bible Engine loads one book at a time by adding a local script element; it does not use `fetch()`, ES modules, a server, or an external library. This loading method is intended for offline `file://` use.
 
-## Testing notes
-- JavaScript syntax checks pass for all application and data scripts.
-- HTML checks found no duplicate IDs and all referenced local script files exist.
-- All 41 catalogue entries' Scripture chapter references were checked against KJV, WEB, WEBSTER and WEB-C; WEB-C's Greek-labelled Daniel book is handled by an alias in the reader.
-- Browser-based visual/audio testing on a physical Android tablet is still recommended. Speech voice availability and voice quality depend on the Android browser and installed offline voices.
+The engine exposes `BibleEngine.loadBook(book, version)`, `getChapter`, `getVerse`, `getVerseEntries`, `loadSearchIndex` and `search(query, version, limit)`. Search indexes narrow candidates to chapters; actual verse text is checked after the relevant book is loaded.
