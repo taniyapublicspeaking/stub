@@ -1,19 +1,41 @@
-BIBLE INFORMATION CENTRE — BUILD 1.3.2
-Stage: Individual book data files and chapter-level search indexes
+BIBLE INFORMATION CENTRE — BUILD 1.3.4 VERIFICATION
+=================================================
 
-VERIFIED
-- KJV: 66 books, 1,189 chapters, 31,102 verses.
-- WEB: 66 books, 1,189 chapters, 31,098 verses.
-- WEB-C: 73 books, 1,328 chapters, 35,408 verses.
-- All 205 individual book JavaScript files exist and load through the engine test harness.
-- Genesis 1:1 retrieval verified in all three editions.
-- Search index loading and a multi-word search verified in all three editions.
-- All JavaScript files pass Node syntax checks.
-- All local script and stylesheet references in index.html resolve.
-- No monolithic KJV, WEB or WEB-C data files remain in this build.
+Bible data integrity
+- KJV: 66 books (39 OT + 27 NT), 1,189 chapters, 31,102 verses.
+- WEB: 66 books (39 OT + 27 NT), 1,189 chapters, 31,098 verses.
+- WEB-C: 73 books (46 OT + 27 NT), 1,328 chapters, 35,408 verses.
+- 205 individual local Bible book files and three local search indexes.
+- No Webster edition in the active build.
 
-IMPLEMENTATION NOTES
-- Uses classic JavaScript files and script-element loading for local-file compatibility.
-- Does not use fetch(), ES modules, external libraries, remote services or a server.
-- Search indexes are chapter-level inverted indexes. Matching verses are verified against the original verse text after the relevant book is loaded.
-- Browser UI testing and testing on the user's Android tablet remain outstanding.
+Implemented in 1.3.4
+- Offline Bible Search with all-words and exact-phrase matching.
+- Testament and optional Book filters for search, including WEB-C's additional books.
+- Search result links open the exact verse in Bible Reader and switch edition when necessary.
+- Compare Versions for KJV, WEB and WEB-C.
+- Whole-chapter, single-verse, range and comma-separated range comparison references.
+- Parallel and stacked comparison layouts.
+- Clear notices when a requested book is not included in a particular edition.
+- Psalm/Psalms and WEB-C Greek-labelled Esther/Daniel aliases handled in comparison.
+- Both tools styled for global Day/Night mode and A− / A / A+ reading text controls.
+
+Automated checks performed
+- Node syntax checks passed for all JavaScript files.
+- Bible Engine integrity test loaded all 205 book files and confirmed all three edition totals.
+- Existing search smoke test returned Genesis 1:1 for "In the beginning".
+- New search tests passed for exact phrase, all-words matching, Testament filtering and WEB-C Wisdom book filtering.
+- Search interface test rendered matching verse cards and updated the result status.
+- Comparison logic tests passed for John 3:16-18 in all three editions (three verses per edition).
+- Psalm 23 comparison passed across Psalm/Psalms book-name differences.
+- Wisdom 3:1-2 comparison passed with WEB-C text and clear unavailable notices for KJV and WEB.
+
+Manual device testing still required
+- Open index.html directly from the extracted folder on the target Android tablet.
+- Test search in each edition, Testament and Book filters, and opening a result in Bible Reader.
+- Test comparison using a common passage, a full chapter, a verse range and a WEB-C-only book.
+- Confirm Day/Night and A− / A / A+ remain readable on the tablet.
+
+Offline design
+- Plain HTML, CSS and JavaScript.
+- No server, database, CDN, API, external library or Internet connection required.
+- Local classic script loading is retained for compatibility with direct file:// use.
