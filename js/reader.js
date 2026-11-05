@@ -1,12 +1,7 @@
 (() => {
   "use strict";
 
-  const DATA_FILES = {
-    kjv: "data/kjv-content.js",
-    web: "data/web-content.js",
-    webster: "data/webster-content.js",
-    webc: "data/webc-content.js"
-  };
+  const SUPPORTED_VERSIONS = ["kjv", "web", "webc"];
 
   const versionSelect = document.getElementById("versionSelect");
   const bookSelect = document.getElementById("bookSelect");
@@ -40,111 +35,88 @@
   function setStatus(message) { statusMessage.textContent = message; }
 
   function loadVersion(version) {
-    if (!DATA_FILES[version]) return;
+    if (!SUPPORTED_VERSIONS.includes(version)) return;
     stopReading();
     currentVersion = version;
     currentData = null;
-    verseList.innerHTML = '<p class="status">Loading selected Bible version…</p>';
-
-    // Reuse the initially loaded KJV script; load the other data files on demand.
-    if (version === "kjv" && window.BIBLE_DATA && window.BIBLE_DATA.version.startsWith("King James")) {
-      currentData = window.BIBLE_DATA;
+    verseList.innerHTML = '<p class="status">Loading Bible catalogue…</p>';
+    window.BibleEngine.loadVersion(version).then(data => {
+      if (currentVersion !== version) return;
+      currentData = data;
       populateBooks();
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.src = DATA_FILES[version];
-    script.onload = () => {
-      currentData = window.BIBLE_DATA;
-      populateBooks();
-    };
-    script.onerror = () => {
-      verseList.innerHTML = "";
-      setStatus("Could not load this Bible data file. Check that the data folder is alongside app.js.");
-    };
-    document.querySelectorAll("script[data-bible-version]").forEach(node => node.remove());
-    script.dataset.bibleVersion = version;
-    document.body.appendChild(script);
+    }).catch(error => {
+      verseList.innerHTML = '';
+      setStatus(error.message || 'Could not load this Bible version.');
+    });
   }
 
   function populateBooks() {
-    const books = Object.keys(currentData.books);
-    bookSelect.innerHTML = "";
+    const books = window.BibleEngine.getBooks(currentVersion);
+    bookSelect.innerHTML = '';
     books.forEach(book => {
-      const option = document.createElement("option");
-      option.value = book;
-      option.textContent = book;
-      bookSelect.appendChild(option);
+      const option = document.createElement('option');
+      option.value = book; option.textContent = book; bookSelect.appendChild(option);
     });
-    // Begin at Genesis when present, otherwise use the first supplied book.
-    bookSelect.value = books.includes("Genesis") ? "Genesis" : books[0];
+    bookSelect.value = books.includes('Genesis') ? 'Genesis' : books[0];
     populateChapters();
   }
 
-  function populateChapters() {
-    const chapters = Object.keys(currentData.books[bookSelect.value] || {});
-    chapterSelect.innerHTML = "";
-    chapters.forEach(chapter => {
-      const option = document.createElement("option");
-      option.value = chapter;
-      option.textContent = chapter;
-      chapterSelect.appendChild(option);
-    });
-    chapterSelect.value = chapters[0] || "";
-    renderChapter();
+  async function populateChapters() {
+    const book = bookSelect.value;
+    if (!book) return;
+    stopReading();
+    chapterSelect.innerHTML = '<option>Loading…</option>';
+    verseList.innerHTML = '<p class="status">Loading ' + book + '…</p>';
+    try {
+      await window.BibleEngine.loadBook(book, currentVersion);
+      if (book !== bookSelect.value) return;
+      const chapters = window.BibleEngine.getChapters(book, currentVersion);
+      chapterSelect.innerHTML = '';
+      chapters.forEach(chapter => {
+        const option = document.createElement('option');
+        option.value = chapter; option.textContent = chapter; chapterSelect.appendChild(option);
+      });
+      chapterSelect.value = chapters[0] || '';
+      await renderChapter();
+    } catch (error) { setStatus(error.message); }
   }
 
-  function renderChapter() {
+  async function renderChapter() {
     if (!currentData) return;
-    stopReading();
     const book = bookSelect.value;
     const chapter = chapterSelect.value;
-    const verses = currentData.books?.[book]?.[chapter] || {};
-    const entries = Object.entries(verses).sort((a, b) => parseInt(a[0], 10) - parseInt(b[0], 10));
-
-    passageTitle.textContent = `${book} ${chapter}`;
-    versionLabel.textContent = currentData.abbreviation || currentData.version.toUpperCase();
-    verseCount.textContent = `${entries.length} ${entries.length === 1 ? "verse" : "verses"}`;
-    verseList.innerHTML = "";
-
-    entries.forEach(([number, text]) => {
-      const card = document.createElement("article");
-      card.className = "verse-card";
-      card.id = `verse-${number}`;
-
-      const badge = document.createElement("span");
-      badge.className = "verse-number";
-      badge.textContent = number;
-
-      const content = document.createElement("div");
-      const verseText = document.createElement("p");
-      verseText.className = "verse-text";
-      verseText.textContent = text;
-
-      const actions = document.createElement("div");
-      actions.className = "verse-actions";
-      const speak = document.createElement("button");
-      speak.className = "verse-read";
-      speak.type = "button";
-      speak.textContent = "▶ Read this verse";
-      speak.addEventListener("click", () => speakText(text, card, `${book} ${chapter}:${number}`));
-
-      actions.appendChild(speak);
-      content.append(verseText, actions);
-      card.append(badge, content);
-      verseList.appendChild(card);
-    });
-
-    prevButton.disabled = isFirstChapter();
-    nextButton.disabled = isLastChapter();
-    setStatus("Ready to read. Choose “Read chapter” or read an individual verse.");
+    if (!book || !chapter) return;
+    stopReading();
+    verseList.innerHTML = '<p class="status">Loading chapter…</p>';
+    try {
+      await window.BibleEngine.loadBook(book, currentVersion);
+      if (book !== bookSelect.value || chapter !== chapterSelect.value) return;
+      const entries = window.BibleEngine.getVerseEntries(book, chapter, currentVersion);
+      passageTitle.textContent = `${book} ${chapter}`;
+      versionLabel.textContent = currentData.abbreviation || currentData.name.toUpperCase();
+      verseCount.textContent = `${entries.length} ${entries.length === 1 ? 'verse' : 'verses'}`;
+      verseList.innerHTML = '';
+      entries.forEach(([number, text]) => {
+        const card = document.createElement('article');
+        card.className = 'verse-card'; card.id = `verse-${number}`;
+        const badge = document.createElement('span'); badge.className = 'verse-number'; badge.textContent = number;
+        const content = document.createElement('div');
+        const verseText = document.createElement('p'); verseText.className = 'verse-text'; verseText.textContent = text;
+        const actions = document.createElement('div'); actions.className = 'verse-actions';
+        const speak = document.createElement('button'); speak.className = 'verse-read'; speak.type = 'button';
+        speak.textContent = '▶ Read this verse';
+        speak.addEventListener('click', () => speakText(text, card, `${book} ${chapter}:${number}`));
+        actions.appendChild(speak); content.append(verseText, actions); card.append(badge, content); verseList.appendChild(card);
+      });
+      prevButton.disabled = isFirstChapter(); nextButton.disabled = isLastChapter();
+      setStatus('Ready to read. Choose “Read chapter” or read an individual verse.');
+    } catch (error) { verseList.innerHTML = ''; setStatus(error.message); }
   }
 
   function getChapterPosition() {
-    const books = Object.keys(currentData.books);
+    const books = window.BibleEngine.getBooks(currentVersion);
     const bookIndex = books.indexOf(bookSelect.value);
-    const chapters = Object.keys(currentData.books[bookSelect.value]);
+    const chapters = window.BibleEngine.getChapters(bookSelect.value, currentVersion);
     const chapterIndex = chapters.indexOf(chapterSelect.value);
     return { books, bookIndex, chapters, chapterIndex };
   }
@@ -159,23 +131,27 @@
     return p.bookIndex === p.books.length - 1 && p.chapterIndex === p.chapters.length - 1;
   }
 
-  function moveChapter(direction) {
+  async function moveChapter(direction) {
     const p = getChapterPosition();
     let bookIndex = p.bookIndex;
     let chapterIndex = p.chapterIndex + direction;
     if (chapterIndex < 0) {
       bookIndex--;
       if (bookIndex < 0) return;
-      chapterIndex = Object.keys(currentData.books[p.books[bookIndex]]).length - 1;
+      chapterIndex = window.BibleEngine.getChapters(p.books[bookIndex], currentVersion).length - 1;
     } else if (chapterIndex >= p.chapters.length) {
       bookIndex++;
       if (bookIndex >= p.books.length) return;
       chapterIndex = 0;
     }
-    bookSelect.value = p.books[bookIndex];
-    populateChapters();
-    chapterSelect.value = Object.keys(currentData.books[bookSelect.value])[chapterIndex];
-    renderChapter();
+    const targetBook = p.books[bookIndex];
+    bookSelect.value = targetBook;
+    await window.BibleEngine.loadBook(targetBook, currentVersion);
+    const targetChapters = window.BibleEngine.getChapters(targetBook, currentVersion);
+    chapterSelect.innerHTML = "";
+    targetChapters.forEach(ch => { const option = document.createElement("option"); option.value = ch; option.textContent = ch; chapterSelect.appendChild(option); });
+    chapterSelect.value = targetChapters[chapterIndex];
+    await renderChapter();
   }
 
   function populateVoices() {
@@ -243,10 +219,11 @@
     window.speechSynthesis.speak(utterance);
   }
 
-  function readChapter() {
+  async function readChapter() {
     const book = bookSelect.value;
     const chapter = chapterSelect.value;
-    const verses = currentData.books[book][chapter];
+    await window.BibleEngine.loadBook(book, currentVersion);
+    const verses = window.BibleEngine.getChapter(book, chapter, currentVersion);
     // Keep verse numbers visible in the interface, but speak only Scripture text.
     const text = Object.entries(verses)
       .sort((a, b) => parseInt(a[0], 10) - parseInt(b[0], 10))
@@ -309,16 +286,20 @@
 
   // Public bridge used by catalogue entries to open a cited passage in the reader.
   window.BibleReader = {
-    openPassage(book, chapter) {
-      if (!currentData || !currentData.books) return false;
-      const bookAlias = currentData.books[book] ? book : (book === "Daniel" && currentData.books["Daniel (Greek)"] ? "Daniel (Greek)" : book);
-      if (!currentData.books[bookAlias]) return false;
-      bookSelect.value = bookAlias;
-      populateChapters();
+    async openPassage(book, chapter) {
+      if (!currentData) return false;
+      const books = window.BibleEngine.getBooks(currentVersion);
+      const alias = books.includes(book) ? book : (book === 'Daniel' && books.includes('Daniel (Greek)') ? 'Daniel (Greek)' : book);
+      if (!books.includes(alias)) return false;
+      bookSelect.value = alias;
+      await window.BibleEngine.loadBook(alias, currentVersion);
+      const chapters = window.BibleEngine.getChapters(alias, currentVersion);
       const requested = String(chapter);
-      if (![...chapterSelect.options].some(option => option.value === requested)) return false;
+      if (!chapters.includes(requested)) return false;
+      chapterSelect.innerHTML = "";
+      chapters.forEach(ch => { const option = document.createElement("option"); option.value = ch; option.textContent = ch; chapterSelect.appendChild(option); });
       chapterSelect.value = requested;
-      renderChapter();
+      await renderChapter();
       return true;
     }
   };
