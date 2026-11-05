@@ -29,4 +29,22 @@
   });
   document.addEventListener("keydown",e=>{if(e.key==="Escape")sidebar.classList.remove("sidebar-open");});
   showView("dashboard");
+
+  // Site-wide Day/Night mode and reading-size controls (persist locally when available).
+  const themeButton=document.getElementById("globalThemeToggle");
+  const sizeDown=document.getElementById("globalFontDecrease");
+  const sizeReset=document.getElementById("globalFontReset");
+  const sizeUp=document.getElementById("globalFontIncrease");
+  const SIZE_DEFAULT=1, SIZE_MIN=.85, SIZE_MAX=1.5, SIZE_STEP=.1;
+  let readingScale=SIZE_DEFAULT;
+  let theme="day";
+  try { theme=localStorage.getItem("bibleAppTheme")||"day"; const stored=Number(localStorage.getItem("bibleAppReadingScale")); if(Number.isFinite(stored)&&stored>=SIZE_MIN&&stored<=SIZE_MAX)readingScale=stored; } catch(error) {}
+  function applyTheme(value){theme=value==="night"?"night":"day";document.body.classList.toggle("night-mode",theme==="night");themeButton.textContent=theme==="night"?"☀ Day":"☾ Night";themeButton.setAttribute("aria-pressed",String(theme==="night"));try{localStorage.setItem("bibleAppTheme",theme)}catch(error){}}
+  function applyScale(value){readingScale=Math.max(SIZE_MIN,Math.min(SIZE_MAX,Math.round(value*100)/100));document.documentElement.style.setProperty("--app-reading-scale",String(readingScale));sizeDown.disabled=readingScale<=SIZE_MIN;sizeUp.disabled=readingScale>=SIZE_MAX;try{localStorage.setItem("bibleAppReadingScale",String(readingScale))}catch(error){}}
+  themeButton.addEventListener("click",()=>applyTheme(theme==="night"?"day":"night"));
+  sizeDown.addEventListener("click",()=>applyScale(readingScale-SIZE_STEP));
+  sizeReset.addEventListener("click",()=>applyScale(SIZE_DEFAULT));
+  sizeUp.addEventListener("click",()=>applyScale(readingScale+SIZE_STEP));
+  applyTheme(theme);applyScale(readingScale);
+
 })();

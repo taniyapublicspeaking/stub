@@ -4,6 +4,7 @@
   const SUPPORTED_VERSIONS = ["kjv", "web", "webc"];
 
   const versionSelect = document.getElementById("versionSelect");
+  const testamentSelect = document.getElementById("testamentSelect");
   const bookSelect = document.getElementById("bookSelect");
   const chapterSelect = document.getElementById("chapterSelect");
   const voiceSelect = document.getElementById("voiceSelect");
@@ -16,15 +17,7 @@
   const stopButton = document.getElementById("stopButton");
   const prevButton = document.getElementById("prevButton");
   const nextButton = document.getElementById("nextButton");
-  const readingModeToggle = document.getElementById("readingModeToggle");
-  const passage = document.querySelector(".passage");
-  const fontDecrease = document.getElementById("fontDecrease");
-  const fontIncrease = document.getElementById("fontIncrease");
-  const fontReset = document.getElementById("fontReset");
-  const DEFAULT_FONT_SIZE = 18;
-  const MIN_FONT_SIZE = 14;
-  const MAX_FONT_SIZE = 30;
-  let readingFontSize = DEFAULT_FONT_SIZE;
+
 
   let currentData = null;
   let currentVersion = "kjv";
@@ -34,31 +27,36 @@
 
   function setStatus(message) { statusMessage.textContent = message; }
 
-  function loadVersion(version) {
-    if (!SUPPORTED_VERSIONS.includes(version)) return;
+  function loadVersion(version, autoPopulate = true) {
+    if (!SUPPORTED_VERSIONS.includes(version)) return Promise.resolve(false);
     stopReading();
     currentVersion = version;
+    versionSelect.value = version;
     currentData = null;
     verseList.innerHTML = '<p class="status">Loading Bible catalogue…</p>';
-    window.BibleEngine.loadVersion(version).then(data => {
-      if (currentVersion !== version) return;
+    return window.BibleEngine.loadVersion(version).then(data => {
+      if (currentVersion !== version) return false;
       currentData = data;
-      populateBooks();
+      if (autoPopulate) populateBooks(true);
+      return data;
     }).catch(error => {
       verseList.innerHTML = '';
       setStatus(error.message || 'Could not load this Bible version.');
+      return false;
     });
   }
 
-  function populateBooks() {
-    const books = window.BibleEngine.getBooks(currentVersion);
+  function populateBooks(preserveSelection = false, loadChapters = true) {
+    const previousBook = bookSelect.value;
+    const books = window.BibleEngine.getBooks(currentVersion, testamentSelect.value);
     bookSelect.innerHTML = '';
     books.forEach(book => {
       const option = document.createElement('option');
       option.value = book; option.textContent = book; bookSelect.appendChild(option);
     });
-    bookSelect.value = books.includes('Genesis') ? 'Genesis' : books[0];
-    populateChapters();
+    bookSelect.value = preserveSelection && books.includes(previousBook)
+      ? previousBook : (books.includes('Genesis') ? 'Genesis' : books[0]);
+    if (loadChapters) populateChapters();
   }
 
   async function populateChapters() {
@@ -114,7 +112,7 @@
   }
 
   function getChapterPosition() {
-    const books = window.BibleEngine.getBooks(currentVersion);
+    const books = window.BibleEngine.getBooks(currentVersion, testamentSelect.value);
     const bookIndex = books.indexOf(bookSelect.value);
     const chapters = window.BibleEngine.getChapters(bookSelect.value, currentVersion);
     const chapterIndex = chapters.indexOf(chapterSelect.value);
@@ -242,41 +240,10 @@
   }
 
 
-  // Reading appearance is local to the Scripture panel and works offline.
-  function setReadingMode(mode) {
-    const isNight = mode === "night";
-    passage.classList.toggle("night-reading", isNight);
-    readingModeToggle.textContent = isNight ? "☀ Day mode" : "☾ Night mode";
-    readingModeToggle.setAttribute("aria-pressed", String(isNight));
-  }
-
-  let savedReadingMode = "day";
-  try { savedReadingMode = localStorage.getItem("bibleReadingMode") || "day"; } catch (error) { /* Storage may be unavailable in local-file mode. */ }
-  setReadingMode(savedReadingMode);
-  readingModeToggle.addEventListener("click", () => {
-    const nextMode = passage.classList.contains("night-reading") ? "day" : "night";
-    setReadingMode(nextMode);
-    try { localStorage.setItem("bibleReadingMode", nextMode); } catch (error) { /* The toggle still works for this session. */ }
-  });
-
-  function setReadingFontSize(size, save = true) {
-    readingFontSize = Math.max(MIN_FONT_SIZE, Math.min(MAX_FONT_SIZE, size));
-    passage.style.setProperty("--reading-font-size", `${readingFontSize}px`);
-    if (save) { try { localStorage.setItem("bibleReadingFontSize", String(readingFontSize)); } catch (error) { /* Session-only fallback. */ } }
-    fontDecrease.disabled = readingFontSize <= MIN_FONT_SIZE;
-    fontIncrease.disabled = readingFontSize >= MAX_FONT_SIZE;
-    fontReset.setAttribute("aria-label", `Reset reading text size to ${DEFAULT_FONT_SIZE} pixels`);
-  }
-  try {
-    const storedSize = Number(localStorage.getItem("bibleReadingFontSize"));
-    if (Number.isFinite(storedSize) && storedSize >= MIN_FONT_SIZE && storedSize <= MAX_FONT_SIZE) readingFontSize = storedSize;
-  } catch (error) { /* Storage may be unavailable for local files. */ }
-  setReadingFontSize(readingFontSize, false);
-  fontDecrease.addEventListener("click", () => setReadingFontSize(readingFontSize - 2));
-  fontIncrease.addEventListener("click", () => setReadingFontSize(readingFontSize + 2));
-  fontReset.addEventListener("click", () => setReadingFontSize(DEFAULT_FONT_SIZE));
+  // Appearance controls are managed globally by app.js so every section shares them.
 
   versionSelect.addEventListener("change", event => loadVersion(event.target.value));
+  testamentSelect.addEventListener("change", () => populateBooks(false));
   bookSelect.addEventListener("change", populateChapters);
   chapterSelect.addEventListener("change", renderChapter);
   prevButton.addEventListener("click", () => moveChapter(-1));
@@ -286,11 +253,15 @@
 
   // Public bridge used by catalogue entries to open a cited passage in the reader.
   window.BibleReader = {
-    async openPassage(book, chapter) {
+    async openPassage(book, chapter, verseReference, requestedVersion) {
+      if (requestedVersion && requestedVersion !== currentVersion) await loadVersion(requestedVersion, false);
       if (!currentData) return false;
       const books = window.BibleEngine.getBooks(currentVersion);
-      const alias = books.includes(book) ? book : (book === 'Daniel' && books.includes('Daniel (Greek)') ? 'Daniel (Greek)' : book);
+      const alias = books.includes(book) ? book : (book === 'Daniel' && books.includes('Daniel (Greek)') ? 'Daniel (Greek)' : (book === 'Esther' && books.includes('Esther (Greek)') ? 'Esther (Greek)' : book));
       if (!books.includes(alias)) return false;
+      const targetTestament = window.BibleEngine.getTestament(alias, currentVersion);
+      if (testamentSelect.value !== 'all' && testamentSelect.value !== targetTestament) testamentSelect.value = targetTestament;
+      populateBooks(true, false);
       bookSelect.value = alias;
       await window.BibleEngine.loadBook(alias, currentVersion);
       const chapters = window.BibleEngine.getChapters(alias, currentVersion);
@@ -300,9 +271,28 @@
       chapters.forEach(ch => { const option = document.createElement("option"); option.value = ch; option.textContent = ch; chapterSelect.appendChild(option); });
       chapterSelect.value = requested;
       await renderChapter();
+      highlightVerseReference(verseReference);
       return true;
     }
   };
+
+  function highlightVerseReference(reference) {
+    document.querySelectorAll('.verse-card.is-reference-highlight').forEach(el => el.classList.remove('is-reference-highlight'));
+    if (reference === undefined || reference === null || String(reference).trim() === '') return;
+    const wanted = new Set();
+    String(reference).split(',').forEach(part => {
+      const match = part.trim().match(/^(\d+)(?:\s*[-–]\s*(\d+))?$/);
+      if (!match) return;
+      const first = Number(match[1]), last = Number(match[2] || match[1]);
+      for (let n = Math.min(first, last); n <= Math.max(first, last); n++) wanted.add(String(n));
+    });
+    wanted.forEach(number => {
+      const card = document.getElementById('verse-' + number);
+      if (card) card.classList.add('is-reference-highlight');
+    });
+    const firstCard = document.getElementById('verse-' + [...wanted][0]);
+    if (firstCard) firstCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 
   if ("speechSynthesis" in window) {
     populateVoices();

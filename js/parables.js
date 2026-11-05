@@ -43,10 +43,12 @@
       const label = document.createElement("span"); label.textContent = `${book} ${range}`;
       const open = document.createElement("button"); open.type = "button"; open.className = "small-action"; open.textContent = "Open in Bible Reader";
       open.addEventListener("click", () => {
-        const chapter = range.split(":")[0];
+        const match = String(range).match(/^(\d+)(?::(.+))?$/);
+        if (!match) return;
+        const chapter = match[1], verses = match[2] || null;
         detail.hidden = true;
         if (typeof window.showBibleView === "function") window.showBibleView("reader");
-        if (window.BibleReader?.openPassage) window.BibleReader.openPassage(book, chapter);
+        if (window.BibleReader?.openPassage) window.BibleReader.openPassage(book, chapter, verses);
       });
       row.append(label,open); refs.appendChild(row);
     });
